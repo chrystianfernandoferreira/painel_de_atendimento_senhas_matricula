@@ -2,17 +2,11 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-
-<meta name="viewport"
-      content="width=device-width, height=device-height,
-               initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Painel de Atendimento</title>
 
 <style>
-* {
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 html, body {
     width: 100%;
@@ -23,16 +17,13 @@ html, body {
     color: #fff;
 }
 
-/* CONTAINER GERAL */
 .screen {
     min-height: 100dvh;
-    width: 100%;
     display: flex;
     flex-direction: column;
     background: linear-gradient(135deg, #7f1d1d, #374151);
 }
 
-/* CABEÇALHO */
 .header {
     background: #991b1b;
     text-align: center;
@@ -48,7 +39,6 @@ html, body {
     font-size: clamp(64px, 15vw, 200px);
     font-weight: bold;
     color: #fde047;
-    line-height: 1;
 }
 
 .setor {
@@ -57,14 +47,12 @@ html, body {
 
 .horarios {
     font-size: clamp(14px, 3vw, 30px);
-    margin-top: 0.5vmin;
 }
 
-/* CONTEÚDO */
 .content {
     flex: 1;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: clamp(12px, 3vmin, 40px);
     padding: clamp(12px, 3vmin, 40px);
 }
@@ -72,17 +60,12 @@ html, body {
 .section {
     background: #f3f4f6;
     color: #000;
-    border-radius: clamp(10px, 2vmin, 24px);
-    padding: clamp(12px, 3vmin, 40px);
+    border-radius: 20px;
+    padding: 30px;
     text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
 }
 
 .section h2 {
-    margin-top: 0;
-    font-size: clamp(22px, 4vw, 54px);
     color: #7f1d1d;
 }
 
@@ -90,11 +73,10 @@ html, body {
     font-size: clamp(20px, 4vw, 46px);
 }
 
-/* CONTROLES */
 .controls {
     background: #020617;
     text-align: center;
-    padding: clamp(10px, 2vmin, 20px);
+    padding: 20px;
 }
 
 button {
@@ -110,13 +92,11 @@ button {
 .mat { background: #334155; color: #fff; }
 .reset { background: #f59e0b; color: #000; }
 
-/* RODAPÉ */
 .footer {
     background: #020617;
     text-align: center;
-    padding: clamp(8px, 1.8vmin, 18px);
+    padding: 14px;
     font-size: clamp(12px, 2.5vw, 22px);
-    color: #e5e7eb;
 }
 </style>
 </head>
@@ -150,92 +130,106 @@ button {
     </div>
 
     <div class="controls">
-        <button class="doc" onclick="chamar('DOCUMENTACAO')">📄 Documentação (F1)</button>
-        <button class="mat" onclick="chamar('MATRICULA')">📝 Matrícula (F2)</button>
-        <button class="reset" onclick="redefinir()">🔄 Redefinir (F3)</button>
+        <button class="doc" onclick="chamar('DOCUMENTACAO')">📄 Documentação</button>
+        <button class="mat" onclick="chamar('MATRICULA')">📝 Matrícula</button>
+        <button class="reset" onclick="redefinir()">🔄 Redefinir</button>
     </div>
 
     <div class="footer">
         Etec Sylvio de Mattos Carvalho • Centro Paula Souza
     </div>
-
 </div>
 
-<audio id="tindon"
-       src="https://actions.google.com/sounds/v1/alarms/airport_chime.ogg"></audio>
+<audio id="tindon" src="https://actions.google.com/sounds/v1/alarms/airport_chime.ogg"></audio>
 
-<script>
-let estado = JSON.parse(localStorage.getItem("estado")) || {
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCfaPNHgxrem88R7x8dKD9j2SzTYPm9v10",
+  authDomain: "painel-senhas-etec.firebaseapp.com",
+  databaseURL: "https://painel-senhas-etec-default-rtdb.firebaseio.com",
+  projectId: "painel-senhas-etec",
+  storageBucket: "painel-senhas-etec.appspot.com",
+  messagingSenderId: "52328553080",
+  appId: "1:52328553080:web:1fcdda82a6bdbf70732b8d"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const estadoRef = ref(db, "estado");
+
+/* Hora atual */
+setInterval(() => {
+  horaAtual.textContent = new Date().toLocaleTimeString("pt-BR");
+}, 1000);
+
+/* Renderização */
+function render(e) {
+  senha.textContent = e.senha;
+  setor.textContent = e.setor;
+  horaAtendimento.textContent = e.horaAtendimento;
+  docAtual.textContent = e.docAtual;
+  docProx.textContent = e.docProx;
+  matAtual.textContent = e.matAtual;
+  matProx.textContent = e.matProx;
+}
+
+/* Atualização em tempo real */
+onValue(estadoRef, snap => {
+  if (snap.exists()) render(snap.val());
+});
+
+/* Voz */
+function falar(texto) {
+  const msg = new SpeechSynthesisUtterance(texto);
+  msg.lang = "pt-BR";
+  speechSynthesis.speak(msg);
+}
+
+/* Chamar senha */
+window.chamar = async function(tipo) {
+  tindon.play();
+  const snap = await get(estadoRef);
+
+  let e = snap.exists() ? snap.val() : {
     docAtual: "--", docProx: 1,
     matAtual: "--", matProx: 1,
     senha: "--",
     setor: "AGUARDANDO",
     horaAtendimento: "--:--"
+  };
+
+  e.horaAtendimento = new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+
+  if (tipo === "DOCUMENTACAO") {
+    e.docAtual = e.docProx++;
+    e.senha = e.docAtual;
+    e.setor = "DOCUMENTAÇÃO";
+    falar(`Senha ${e.docAtual}, documentação`);
+  } else {
+    e.matAtual = e.matProx++;
+    e.senha = e.matAtual;
+    e.setor = "MATRÍCULA";
+    falar(`Senha ${e.matAtual}, matrícula`);
+  }
+
+  set(estadoRef, e);
 };
 
-function atualizarHoraAtual() {
-    horaAtual.textContent = new Date().toLocaleTimeString("pt-BR");
-}
-setInterval(atualizarHoraAtual, 1000);
-atualizarHoraAtual();
+/* Reset */
+window.redefinir = function() {
+  if (!confirm("Deseja redefinir todas as senhas?")) return;
 
-function horaAtendimentoAtual() {
-    return new Date().toLocaleTimeString("pt-BR", {
-        hour: "2-digit",
-        minute: "2-digit"
-    });
-}
-
-function falar(texto) {
-    const msg = new SpeechSynthesisUtterance(texto);
-    msg.lang = "pt-BR";
-    msg.rate = 0.9;
-    msg.pitch = 1.1;
-    speechSynthesis.speak(msg);
-}
-
-function atualizarTela() {
-    senha.textContent = estado.senha;
-    setor.textContent = estado.setor;
-    horaAtendimento.textContent = estado.horaAtendimento;
-    docAtual.textContent = estado.docAtual;
-    docProx.textContent = estado.docProx;
-    matAtual.textContent = estado.matAtual;
-    matProx.textContent = estado.matProx;
-    localStorage.setItem("estado", JSON.stringify(estado));
-}
-atualizarTela();
-
-function chamar(tipo) {
-    tindon.play();
-    setTimeout(() => {
-        estado.horaAtendimento = horaAtendimentoAtual();
-        if (tipo === "DOCUMENTACAO") {
-            estado.docAtual = estado.docProx++;
-            estado.senha = estado.docAtual;
-            estado.setor = "DOCUMENTAÇÃO";
-            falar(`Senha ${estado.docAtual}, documentação`);
-        } else {
-            estado.matAtual = estado.matProx++;
-            estado.senha = estado.matAtual;
-            estado.setor = "MATRÍCULA";
-            falar(`Senha ${estado.matAtual}, matrícula`);
-        }
-        atualizarTela();
-    }, 900);
-}
-
-function redefinir() {
-    if (!confirm("Deseja redefinir todas as senhas?")) return;
-    estado = {
-        docAtual: "--", docProx: 1,
-        matAtual: "--", matProx: 1,
-        senha: "--",
-        setor: "AGUARDANDO",
-        horaAtendimento: "--:--"
-    };
-    atualizarTela();
-}
+  set(estadoRef, {
+    docAtual: "--", docProx: 1,
+    matAtual: "--", matProx: 1,
+    senha: "--",
+    setor: "AGUARDANDO",
+    horaAtendimento: "--:--"
+  });
+};
 </script>
 
 </body>
