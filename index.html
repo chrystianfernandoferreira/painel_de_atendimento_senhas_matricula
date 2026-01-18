@@ -9,83 +9,81 @@
 * { box-sizing: border-box; }
 
 html, body {
-    width: 100%;
-    min-height: 100dvh;
-    margin: 0;
-    background: #111827;
-    font-family: Arial, Helvetica, sans-serif;
-    color: #fff;
+  width: 100%;
+  min-height: 100dvh;
+  margin: 0;
+  background: #111827;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #fff;
 }
 
 .screen {
-    min-height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    background: linear-gradient(135deg, #7f1d1d, #374151);
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #7f1d1d, #374151);
 }
 
 .header {
-    background: #991b1b;
-    text-align: center;
-    padding: clamp(12px, 2vmin, 28px);
+  background: #991b1b;
+  text-align: center;
+  padding: 20px;
 }
 
 .header h1 {
-    margin: 0;
-    font-size: clamp(32px, 5vw, 92px);
+  margin: 0;
+  font-size: clamp(32px, 5vw, 92px);
 }
 
 .senha {
-    font-size: clamp(64px, 15vw, 200px);
-    font-weight: bold;
-    color: #fde047;
+  font-size: clamp(64px, 15vw, 200px);
+  font-weight: bold;
+  color: #fde047;
 }
 
 .setor {
-    font-size: clamp(24px, 6vw, 60px);
+  font-size: clamp(24px, 6vw, 60px);
 }
 
 .horarios {
-    font-size: clamp(14px, 3vw, 30px);
+  font-size: clamp(14px, 3vw, 30px);
 }
 
 .content {
-    flex: 1;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: clamp(12px, 3vmin, 40px);
-    padding: clamp(12px, 3vmin, 40px);
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+  padding: 20px;
 }
 
 .section {
-    background: #f3f4f6;
-    color: #000;
-    border-radius: 20px;
-    padding: 30px;
-    text-align: center;
+  background: #f3f4f6;
+  color: #000;
+  border-radius: 20px;
+  padding: 30px;
+  text-align: center;
 }
 
-.section h2 {
-    color: #7f1d1d;
-}
+.section h2 { color: #7f1d1d; }
 
 .info {
-    font-size: clamp(20px, 4vw, 46px);
+  font-size: clamp(20px, 4vw, 46px);
 }
 
 .controls {
-    background: #020617;
-    text-align: center;
-    padding: 20px;
+  background: #020617;
+  text-align: center;
+  padding: 20px;
 }
 
 button {
-    font-size: clamp(14px, 2.5vw, 28px);
-    padding: 0.6em 1.2em;
-    margin: 0.3em;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
+  font-size: 20px;
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
 }
 
 .doc { background: #dc2626; color: #fff; }
@@ -93,10 +91,9 @@ button {
 .reset { background: #f59e0b; color: #000; }
 
 .footer {
-    background: #020617;
-    text-align: center;
-    padding: 14px;
-    font-size: clamp(12px, 2.5vw, 22px);
+  background: #020617;
+  text-align: center;
+  padding: 14px;
 }
 </style>
 </head>
@@ -104,40 +101,41 @@ button {
 <body>
 
 <div class="screen">
+  <div class="header">
+    <h1>SENHA EM ATENDIMENTO</h1>
+    <div class="senha" id="senha">--</div>
+    <div class="setor" id="setor">AGUARDANDO</div>
+    <div class="horarios">
+      Atendimento: <strong id="horaAtendimento">--:--</strong> |
+      Hora Atual: <strong id="horaAtual">--:--:--</strong>
+    </div>
+  </div>
 
-    <div class="header">
-        <h1>SENHA EM ATENDIMENTO</h1>
-        <div class="senha" id="senha">--</div>
-        <div class="setor" id="setor">AGUARDANDO</div>
-        <div class="horarios">
-            Atendimento: <strong id="horaAtendimento">--:--</strong> |
-            Hora Atual: <strong id="horaAtual">--:--:--</strong>
-        </div>
+  <div class="content">
+    <div class="section">
+      <h2>Documentação</h2>
+      <div class="info">Atendendo: <strong id="docAtual">--</strong></div>
+      <div class="info">Próxima: <strong id="docProx">1</strong></div>
     </div>
 
-    <div class="content">
-        <div class="section">
-            <h2>Documentação</h2>
-            <div class="info">Atendendo: <strong id="docAtual">--</strong></div>
-            <div class="info">Próxima: <strong id="docProx">1</strong></div>
-        </div>
-
-        <div class="section">
-            <h2>Matrícula</h2>
-            <div class="info">Atendendo: <strong id="matAtual">--</strong></div>
-            <div class="info">Próxima: <strong id="matProx">1</strong></div>
-        </div>
+    <div class="section">
+      <h2>Matrícula</h2>
+      <div class="info">Atendendo: <strong id="matAtual">--</strong></div>
+      <div class="info">Próxima: <strong id="matProx">1</strong></div>
     </div>
+  </div>
 
-    <div class="controls">
-        <button class="doc" onclick="chamar('DOCUMENTACAO')">📄 Documentação</button>
-        <button class="mat" onclick="chamar('MATRICULA')">📝 Matrícula</button>
-        <button class="reset" onclick="redefinir()">🔄 Redefinir</button>
-    </div>
+  <div class="controls">
+    <button class="doc" onclick="chamar('DOCUMENTACAO')">📄 Documentação</button>
+    <button class="mat" onclick="chamar('MATRICULA')">📝 Matrícula</button>
+    <button class="reset" onclick="redefinir()">🔄 Redefinir</button>
+    <br><br>
+    <button onclick="ativarAudio()">🔊 Ativar Som</button>
+  </div>
 
-    <div class="footer">
-        Etec Sylvio de Mattos Carvalho • Centro Paula Souza
-    </div>
+  <div class="footer">
+    Etec Sylvio de Mattos Carvalho • Centro Paula Souza
+  </div>
 </div>
 
 <audio id="tindon" src="https://actions.google.com/sounds/v1/alarms/airport_chime.ogg"></audio>
@@ -160,12 +158,10 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const estadoRef = ref(db, "estado");
 
-/* Hora atual */
 setInterval(() => {
   horaAtual.textContent = new Date().toLocaleTimeString("pt-BR");
 }, 1000);
 
-/* Renderização */
 function render(e) {
   senha.textContent = e.senha;
   setor.textContent = e.setor;
@@ -176,23 +172,38 @@ function render(e) {
   matProx.textContent = e.matProx;
 }
 
-/* Atualização em tempo real */
-onValue(estadoRef, snap => {
-  if (snap.exists()) render(snap.val());
-});
-
-/* Voz */
 function falar(texto) {
-  const msg = new SpeechSynthesisUtterance(texto);
-  msg.lang = "pt-BR";
-  speechSynthesis.speak(msg);
+  const u = new SpeechSynthesisUtterance(texto);
+  u.lang = "pt-BR";
+  speechSynthesis.speak(u);
 }
 
-/* Chamar senha */
-window.chamar = async function(tipo) {
-  tindon.play();
-  const snap = await get(estadoRef);
+function tocarSom() {
+  const a = document.getElementById("tindon");
+  a.currentTime = 0;
+  a.play().catch(() => {});
+}
 
+let ultimaFalaId = null;
+
+onValue(estadoRef, snap => {
+  if (!snap.exists()) return;
+  const e = snap.val();
+  render(e);
+
+  if (e.fala && e.falaId !== ultimaFalaId) {
+    ultimaFalaId = e.falaId;
+    tocarSom();
+    falar(e.fala);
+  }
+});
+
+window.ativarAudio = function() {
+  falar("Sistema de senhas ativado");
+};
+
+window.chamar = async function(tipo) {
+  const snap = await get(estadoRef);
   let e = snap.exists() ? snap.val() : {
     docAtual: "--", docProx: 1,
     matAtual: "--", matProx: 1,
@@ -207,27 +218,28 @@ window.chamar = async function(tipo) {
     e.docAtual = e.docProx++;
     e.senha = e.docAtual;
     e.setor = "DOCUMENTAÇÃO";
-    falar(`Senha ${e.docAtual}, documentação`);
+    e.fala = `Senha ${e.docAtual}, documentação`;
   } else {
     e.matAtual = e.matProx++;
     e.senha = e.matAtual;
     e.setor = "MATRÍCULA";
-    falar(`Senha ${e.matAtual}, matrícula`);
+    e.fala = `Senha ${e.matAtual}, matrícula`;
   }
 
+  e.falaId = Date.now();
   set(estadoRef, e);
 };
 
-/* Reset */
 window.redefinir = function() {
-  if (!confirm("Deseja redefinir todas as senhas?")) return;
-
+  if (!confirm("Redefinir todas as senhas?")) return;
   set(estadoRef, {
     docAtual: "--", docProx: 1,
     matAtual: "--", matProx: 1,
     senha: "--",
     setor: "AGUARDANDO",
-    horaAtendimento: "--:--"
+    horaAtendimento: "--:--",
+    fala: "",
+    falaId: 0
   });
 };
 </script>
